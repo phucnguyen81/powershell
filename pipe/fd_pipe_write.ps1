@@ -31,4 +31,5 @@ function Write-NamedPipeline {
 
 }
 
-fd -I -d 3 | Write-NamedPipeline
+# fd -I -d 4 --follow | Write-NamedPipeline
+fd -I -d 4 --follow | Write-NamedPipeline
