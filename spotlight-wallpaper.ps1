@@ -4,7 +4,12 @@
 # Default location for spotlight lock screen image
 $sourceDir="${env:USERPROFILE}/AppData/Local/Packages/Microsoft.Windows.ContentDeliveryManager_cw5n1h2txyewy/LocalState/Assets"
 
-$targetDir="${env:USERPROFILE}/usr/img/wallpapers"
+$currentDir=(Get-Location)
+
+$targetDir="${currentDir}/var/wallpapers"
+If (-not (Test-Path "$targetDir")) {
+  New-Item -Path "$targetDir" -ItemType "directory"
+}
 
 # Get the images
 # Keep file long enough 
