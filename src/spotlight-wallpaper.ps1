@@ -6,7 +6,7 @@ $sourceDir="${env:USERPROFILE}/AppData/Local/Packages/Microsoft.Windows.ContentD
 
 $currentDir=(Get-Location)
 
-$targetDir="${currentDir}/var/wallpapers"
+$targetDir="${currentDir}/var/spotlight-images"
 If (-not (Test-Path "$targetDir")) {
   New-Item -Path "$targetDir" -ItemType "directory"
 }
