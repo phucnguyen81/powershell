@@ -1,10 +1,8 @@
-# Go up to a directory matching a given text pattern.
+# Go up to ancestor directories either by levels or by text pattern.
 param (
-    $pattern = ''
+    [string]$ups = ''
 )
 
-# Given a path and a pattern, 
-# finds the first ancestor directory that matchs the pattern
 function findFirstDirMatch() {
     param (
         [string]$path = $(throw "missing directory path"),
@@ -12,7 +10,7 @@ function findFirstDirMatch() {
     )
     while (![string]::IsNullOrEmpty($path)) {
         $name = Split-Path $path -Leaf 
-        if("$name".ToLower().Contains("$pattern".ToLower())) {
+        if ("$name".ToLower().Contains("$pattern".ToLower())) {
             return $path
         }
         else {
@@ -21,13 +19,26 @@ function findFirstDirMatch() {
     }
 }
 
-if ([string]::IsNullOrEmpty($pattern)) {
-    Set-Location ..
-}
-else {
-    $path = Get-Location
-    $matchDir = (findFirstDirMatch "$path" "$pattern")
-    if (![string]::IsNullOrEmpty($matchDir)) {
-        Set-Location "$matchDir"
+$ErrorActionPreference = "Stop" # fail on first error
+
+if ($ups -match "^[\d\.]+$") {
+    $levels = [int]$ups
+    for ($i = 0; $i -lt $levels; $i++) {
+        Set-Location '..'
     }
 }
+else {
+    $pattern = "$ups"
+    if ([string]::IsNullOrEmpty($pattern)) {
+        Set-Location ..
+    }
+    else {
+        $currentLoc = Get-Location
+        $matchDir = (findFirstDirMatch "$currentLoc" "$pattern")
+        if (![string]::IsNullOrEmpty($matchDir)) {
+            Set-Location "$matchDir"
+        }
+    }
+}
+
+Get-ChildItem | more
