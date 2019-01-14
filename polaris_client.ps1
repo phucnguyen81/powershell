@@ -1,7 +1,9 @@
-# send requests to polaris server
+# Send requests to polaris server
+param(
+    [int]$Port = 8080
+)
 
-$port = 8082
-$baseUri = "http://localhost:${port}"
+$baseUri = "http://localhost:${Port}"
 
 $Response = Invoke-WebRequest "${baseUri}/helloworld"
 $Response.Content
@@ -14,6 +16,7 @@ $Response = Invoke-WebRequest "${baseUri}/hello" `
 $Response.Content
 
 $Response = Invoke-WebRequest "${baseUri}/invoke" `
-    -Method POST -Body (@{ Expr = 'Get-Date' } | ConvertTo-Json)
+    -Method POST -Body (@{ expr = 'Get-Date' } | ConvertTo-Json)
 $Response.Content
 
+# Invoke-WebRequest "${baseUri}/stop" -Method POST

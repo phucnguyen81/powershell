@@ -38,13 +38,17 @@ New-PolarisPostRoute -Path /hello -Scriptblock {
 
 # Execute expressions
 New-PolarisPostRoute -Path /invoke -Scriptblock {
-    if ($Request.Body.Expr) {
-        $Output = Invoke-Expression $Request.Body.Expr `
-            | ConvertTo-Json
-        $Response.Send($Output);
+    if ($Request.Body.expr) {
+        $Expr = $Request.Body.expr
+        $ResponseJson = Invoke-Expression $Expr | ConvertTo-Json
+        $Response.Send($ResponseJson);
     } else {
         $Response.Send('Missing Request.Body.Expr');
     }
+}
+
+New-PolarisPostRoute -Path /stop -Scriptblock {
+    Stop-Polaris
 }
 
 # Pass in script file
@@ -57,7 +61,6 @@ New-PolarisStaticRoute -FolderPath ./static -RoutePath /public -EnableDirectoryB
 $App = Start-Polaris -Port $Port -MinRunspaces 1 -MaxRunspaces 5 -UseJsonBodyParserMiddleware -Verbose
 
 while($App.Listener.IsListening) {
-    # TODO stop server with event?
     Wait-Event callbackcomplete
 }
 
